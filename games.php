@@ -1,5 +1,7 @@
 <?php
 
+//Soru ekleme ve çıkarma yazılacak, ilk etapda kullanılmayacak, Ekleme için Boostrap Cardlar kullanılabilir. Version eklenecek inserlenen sorulara.
+
 $db = mysqli_connect('localhost', 'root', '', 'Matematigo');
 
 if(isset($_REQUEST['action'])){
