@@ -1,6 +1,5 @@
 <?php
 
-//Soru ekleme ve çıkarma yazılacak, ilk etapda kullanılmayacak, Ekleme için Boostrap Cardlar kullanılabilir. Version eklenecek inserlenen sorulara.
 
 $db = mysqli_connect('localhost', 'root', '', 'Matematigo');
 
@@ -76,6 +75,13 @@ if(isset($_REQUEST['action'])){
 
         $gameType = $_REQUEST['gameType'];
         $query = "SELECT * FROM games WHERE gameType = $gameType ORDER BY games.date DESC";
+        PrintJson($db,$query);
+    }
+    
+    if($_REQUEST['action'] == 'displayLeaderBoards4GameType'){
+
+        $gameType = $_REQUEST['gameType'];
+        $query = "SELECT * FROM games WHERE gameType = $gameType ORDER BY games.score DESC";
         PrintJson($db,$query);
     }
 }
