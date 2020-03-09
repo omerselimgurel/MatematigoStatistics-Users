@@ -1,13 +1,35 @@
 
 <?php
-
-///NOT///LOGIN KISMI YAZILACAK. YARIN YAZACAĞIM.
-
-
+//AÇIKLAMALAR AŞAĞIDA
 //users(userName,realName,county,city,town,school,mail,phone,pass,status)
 $db = mysqli_connect('localhost', 'root', '', 'Matematigo');
 
 if(isset($_REQUEST['action'])){
+
+    if($_REQUEST['action'] == 'login'){
+        if(isset($_REQUEST['userName']) && isset($_REQUEST['pass']))
+        {
+            $userName = $_REQUEST['userName'];
+            $pass = $_REQUEST['pass'];
+
+            $query = "SELECT * FROM users WHERE userName = '$userName' AND pass = '$pass' ";
+            $result = mysqli_query($db, $query);
+            if(mysqli_num_rows($result) == 0){
+                echo "Username or Password is wrong";
+            }else{
+                $statusQ = "SELECT * FROM users WHERE userName = '$userName' AND status=1";
+                $result = mysqli_query($db, $statusQ);
+                if(mysqli_num_rows($result) == 0){
+                    echo "Please Confirm your account";
+                }else{
+                    echo "Success";
+                }
+            }
+        }else{
+            echo "Please enter username and password";
+        }
+    }
+
     //Mail Activation, and Insert User UserName mail and pass
     if($_REQUEST['action'] == 'initialInsertUser'){
         if(isset($_REQUEST['userName']) && isset($_REQUEST['mail']) && isset($_REQUEST['pass']))
@@ -42,7 +64,6 @@ if(isset($_REQUEST['action'])){
 
     }
 
-    //Account u gelen maile tıkladığında status u set ediyor. ve aykırı studio web sitesine gönderiyor.
     if($_REQUEST['action'] == 'confirmAccount'){
         if(isset($_REQUEST['userName'])){
             $userName = $_REQUEST['userName'];
@@ -56,7 +77,6 @@ if(isset($_REQUEST['action'])){
     }
 
     //Bu güncelleme fonksiyonu
-    //Uygulama içerisinde giriş yaptıkdan sonra update edebilecekleri alanlar.
     //Email için ayrı bir eşy yazılacak, ayrı bir sayfa gibi, çünkü email kısmında yine konfirmasyon yapılması gerekiyor. ve Mail Update gerekiyor.
     if($_REQUEST['action'] == 'updateAccount'){
         if(isset($_REQUEST['userName']) && isset($_REQUEST['realName']) && isset($_REQUEST['phone']) && isset($_REQUEST['county']) && 
@@ -94,7 +114,6 @@ if(isset($_REQUEST['action'])){
     echo "No Action to Set";
 }
 
-//Mailing fonksiyonu, buradan SMTP konfirigasyonu yaptığımda mail aktive işlemi başkıyor. TEST EDİLDİ.
 function send_email_activation($userName,$userMail){
     require 'C:\xampp\htdocs\Matematigo\PHPMailer-5.2-stable (1)\PHPMailer-5.2-stable\PHPMailerAutoload.php';
     $mail = new PHPMailer;
@@ -104,8 +123,8 @@ function send_email_activation($userName,$userMail){
     $mail->isSMTP();                                      // Set mailer to use SMTP
     $mail->Host = 'friend.guzelhosting.com';  // Specify main and backup SMTP servers
     $mail->SMTPAuth = true;                               // Enable SMTP authentication
-    $mail->Username = '***@**.com';                 // SMTP username
-    $mail->Password = '****';                           // SMTP password
+    $mail->Username = 'iletisim@ugurcanta.com';                 // SMTP username
+    $mail->Password = 'asdasdfq321bp';                           // SMTP password
     $mail->SMTPSecure = 'ssl';                            // Enable TLS encryption, `ssl` also accepted
     $mail->Port = 465;                                    // TCP port to connect to
 
@@ -143,4 +162,16 @@ function PrintJson($db,$query) {
     }
     print json_encode($rows);
 }
+
+// Kayıt için bize 3 değer gerekiyor, (userName,Email,Pass)
+// Yukarıdaki 3 değer le users tablosuna komple bir users(userName,realName,county,city,town,school,mail,phone,pass,status) oluşturuyor.
+// Yukarıdaki tabloda 3 değer dışındakileri Enter (Real Name, County) gibi değerler set ediyor, kullanıcı isterse bunları profilinden düzeltebilir.
+// Başarılı bir şekilde kayıt olursa, Mail adresine Matematigo ya hoş geldiniz gibi bir mail geliyor içerisinde aktivasyon linkinin de bulunduğu,
+// ona tıklayıp, linke gidiyor. Oradaki Action de UserName i tabloda sortlayıp, user'ın kendi row unun status unu 1 e çekiyor. Ve User Account ı Aktif edilmiş oluyor, sonrasında aykırı studio web sayfasına ilerliyor.
+// login kısmı da Unity den giriş yaparken UserName ve Password alacağız, o bize her şey düzgünse success döndürücek, ve unity de sharepref e yazacağız onun doluluğunu kontrol edeceğiz.
+// Eğer confirm değilse account uyarıyor, şifre yada username sıkıntılıysa onu da uyarıyor, bu exceptionları unity tarafında da yazacağız.
+// Profilim sayfası içinde bilgileri göstermek için display user dedim. Direk oradan çekeriz bilgileri.
+// Profilim updateAccount Actionun da Username Pass ve Mail dışındaki bütün bilgiler güncellenebiliyor. Şimdilik ilk aşama olduğu için Kullanıcı adı pass ve mail güncelleme yapmadım, onu da yaparız şimdilik dursun. Şuan bizim için bir önem taşımıyor o.
+
 ?>
+
