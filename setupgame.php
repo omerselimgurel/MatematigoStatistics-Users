@@ -2,8 +2,6 @@
 //setupgame(userName,gameType,gameTitle,gameText,difficulty,gameDuration,gameExpired,date,gameQHash,status)
 //Pass koyulabilir, her oyuncu sadece aynı game type türüne 
 
-//Gametype a göre de bir action yazılacak, sonra galiba bitmiş oluyor. 5 dk lik birşey iyi geceler herkese
-
 $db = mysqli_connect('localhost', 'root', '', 'Matematigo');
 
 
@@ -49,7 +47,31 @@ if(isset($_REQUEST['action'])){
             PrintJson($db,$query);
 
         }else{
-            echo "No userName ";
+            echo "There is no user's game ";
+        }
+    }
+
+    if($_REQUEST['action'] == 'gameTypeGames'){
+        if( isset($_REQUEST['gameType'])){
+
+            $gameType = $_REQUEST['gameType'];
+            $query= "SELECT * FROM setupgame WHERE gameType = '$gameType'";
+            PrintJson($db,$query);
+
+        }else{
+            echo "There is no game type ";
+        }
+    }
+
+    if($_REQUEST['action'] == 'deleteGameType'){
+        if( isset($_REQUEST['gameType'])){
+
+            $gameType = $_REQUEST['gameType'];
+            $query= "DELETE FROM setupgame WHERE gameType = '$gameType'";
+            mysqli_query($db,$query);
+
+        }else{
+            echo "There is no gameType";
         }
     }
     
